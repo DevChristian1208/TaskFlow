@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
+import { useAuth } from "@/lib/Context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setGuestUser } = useAuth(); // ✅ NEU
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +33,19 @@ export default function LoginPage() {
     }
   }
 
+  // ✅ GUEST LOGIN OHNE FIREBASE AUTH
+  async function handleGuestLogin() {
+    const guestId = "guest_" + crypto.randomUUID();
+
+    localStorage.setItem("guestId", guestId);
+
+    setGuestUser(guestId); // setzt User im Context
+
+    router.replace("/Dashboard");
+  }
+
   return (
-    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-6 relative">
+    <div className="min-h-screen bg-[#E8E9FF] flex items-center justify-center px-6 relative">
       <div className="absolute -top-10 left-6 flex items-center">
         <Image src="/Taskflow.png" alt="logo" width={200} height={200} />
       </div>
@@ -53,7 +67,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition"
+              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#6f6fff] focus:ring-4 focus:ring-[#6f6fff]/20 focus:bg-white transition-all duration-200"
               placeholder="name@example.com"
             />
           </div>
@@ -77,12 +91,12 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 pr-12 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition"
+                className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#6f6fff] focus:ring-4 focus:ring-[#6f6fff]/20 focus:bg-white transition-all duration-200"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-1"
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
@@ -91,13 +105,30 @@ export default function LoginPage() {
 
           {errorMsg && <p className="text-red-600 text-center">{errorMsg}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full h-14 rounded-2xl bg-black text-white font-medium hover:bg-[#1d1d1f] transition disabled:opacity-60 text-lg cursor-pointer"
-          >
-            {loading ? "Lade..." : "Login"}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 rounded-2xl bg-black text-white font-medium hover:bg-[#1d1d1f] transition disabled:opacity-60 text-lg cursor-pointer"
+            >
+              {loading ? "Lade..." : "Login"}
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-gray-200" />
+              <span className="text-sm text-gray-400">oder</span>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGuestLogin}
+              disabled={loading}
+              className="w-full h-14 rounded-2xl border border-gray-300 bg-white text-gray-900 font-medium hover:bg-gray-50 transition text-lg"
+            >
+              Als Gast fortfahren
+            </button>
+          </div>
 
           <p className="text-gray-600 text-center text-sm">
             Noch kein Konto?{" "}
@@ -106,6 +137,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </form>
+
         <div className="mt-8 flex justify-center gap-6 text-sm text-gray-500">
           <Link
             href="/ImpressumundDatenschutz/LegalNotice"

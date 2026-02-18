@@ -28,7 +28,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-6 relative">
+    <div className="min-h-screen bg-[#E8E9FF] flex items-center justify-center px-6 relative">
       <div className="absolute -top-10 left-6 flex items-center">
         <Image src="/Taskflow.png" alt="logo" width={200} height={200} />
       </div>
@@ -50,7 +50,7 @@ export default function RegisterPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 focus:ring-2 focus:ring-black focus:bg-white transition text-gray-900"
+              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#6f6fff] focus:ring-4 focus:ring-[#6f6fff]/20 focus:bg-white transition-all duration-200"
               placeholder="name@example.com"
             />
           </div>
@@ -62,7 +62,7 @@ export default function RegisterPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 focus:ring-2 focus:ring-black focus:bg-white transition text-gray-900"
+              className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#6f6fff] focus:ring-4 focus:ring-[#6f6fff]/20 focus:bg-white transition-all duration-200"
               placeholder="Max Mustermann"
             />
           </div>
@@ -77,13 +77,13 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 pr-12 focus:ring-2 focus:ring-black focus:bg-white transition text-gray-900"
+                className="mt-2 w-full h-14 rounded-2xl border border-gray-300 bg-[#FAFAFB] px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#6f6fff] focus:ring-4 focus:ring-[#6f6fff]/20 focus:bg-white transition-all duration-200"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-1"
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>

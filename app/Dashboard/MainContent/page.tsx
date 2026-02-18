@@ -2,14 +2,14 @@
 
 import { useAuth } from "@/lib/Context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, CirclePlus, Flame } from "lucide-react";
+import { CheckCircle, CirclePlus, Flame, LoaderCircle } from "lucide-react";
 import GradientText from "@/components/GradientText";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
 
-type Status = "todo" | "inProgress" | "done";
+type Status = "todo" | "progress" | "done";
 type Priority = "low" | "medium" | "urgent";
 
 type Task = {
@@ -17,7 +17,7 @@ type Task = {
   title: string;
   description: string;
   category: string;
-  priority: "urgent";
+  priority: Priority;
   status: Status;
 };
 
@@ -32,7 +32,13 @@ export default function MainContent() {
 
   useEffect(() => {
     if (!user?.uid) return;
-    const tasksRef = ref(db, `tasks/${user.uid}`);
+
+    const basePath = (user as any).isGuest
+      ? `guestTasks/${user.uid}`
+      : `tasks/${user.uid}`;
+
+    const tasksRef = ref(db, basePath);
+
     return onValue(tasksRef, (snapshot) => {
       if (!snapshot.exists()) {
         setTasks([]);
@@ -44,14 +50,18 @@ export default function MainContent() {
         id,
         ...data[id],
       }));
+
       setTasks(loaded);
     });
   }, [user]);
-  console.log(tasks);
 
-  const todoCount = tasks.filter((task) => task.status === "todo").length;
-  const doneCount = tasks.filter((task) => task.status === "done").length;
-  const urgentCount = tasks.filter((task) => task.priority === "urgent").length;
+  const todoCount = tasks.filter((t) => t.status === "todo").length;
+  const progressCount = tasks.filter((t) => t.status === "progress").length;
+  const doneCount = tasks.filter((t) => t.status === "done").length;
+
+  const urgentCount = tasks.filter((t) => t.priority === "urgent").length;
+  const mediumCount = tasks.filter((t) => t.priority === "medium").length;
+  const lowCount = tasks.filter((t) => t.priority === "low").length;
 
   const cards = [
     {
@@ -65,14 +75,14 @@ export default function MainContent() {
       ),
     },
     {
+      title: "In Progress",
+      value: progressCount,
+      icon: <LoaderCircle className="h-6 w-6 text-blue-500" />,
+    },
+    {
       title: "Done",
       value: doneCount,
       icon: <CheckCircle className="h-6 w-6 text-green-500" />,
-    },
-    {
-      title: "Urgent",
-      value: urgentCount,
-      icon: <Flame className="h-6 w-6 text-red-500" />,
     },
   ];
 
@@ -83,6 +93,7 @@ export default function MainContent() {
           <GradientText className="text-5xl font-semibold leading-tight">
             {greeting}
           </GradientText>
+
           <p className="mt-1 text-lg text-muted-foreground">
             {user?.displayName}
           </p>
@@ -93,19 +104,10 @@ export default function MainContent() {
         {cards.map((card) => (
           <Card
             key={card.title}
-            className="
-              bg-card
-              border border-border
-              rounded-2xl
-              shadow-sm
-              transition
-              hover:shadow-md
-            "
+            className="bg-card border border-border rounded-2xl shadow-sm transition hover:shadow-md"
           >
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-card-foreground">
-                {card.title}
-              </CardTitle>
+              <CardTitle>{card.title}</CardTitle>
               {card.icon}
             </CardHeader>
 
@@ -115,6 +117,34 @@ export default function MainContent() {
           </Card>
         ))}
       </div>
+
+      <Card className="bg-card border border-border rounded-2xl shadow-sm">
+        <CardHeader className="flex flex-row items-center gap-3">
+          <Flame className="h-6 w-6 text-red-500" />
+          <CardTitle>Priorities</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="grid grid-cols-3 gap-6 text-center">
+            <div>
+              <p className="text-sm text-muted-foreground">Urgent</p>
+              <p className="text-4xl font-bold text-red-500">{urgentCount}</p>
+            </div>
+
+            <div>
+              <p className="text-sm text-muted-foreground">Medium</p>
+              <p className="text-4xl font-bold text-yellow-500">
+                {mediumCount}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-sm text-muted-foreground">Low</p>
+              <p className="text-4xl font-bold text-green-500">{lowCount}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </main>
   );
 }

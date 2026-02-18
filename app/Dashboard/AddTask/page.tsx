@@ -3,11 +3,14 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/Context/AuthContext";
-import { ref, set, push, onValue } from "firebase/database";
+import { ref, push, onValue } from "firebase/database";
 import { db } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 
 export default function AddTask() {
   const { user } = useAuth();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState<string[]>([]);
@@ -32,15 +35,32 @@ export default function AddTask() {
     createdAt: number;
   };
 
+  const contactsPath = (user as any)?.isGuest
+    ? `guestContacts/${user?.uid}`
+    : `contacts/${user?.uid}`;
+
+  const tasksPath = (user as any)?.isGuest
+    ? `guestTasks/${user?.uid}`
+    : `tasks/${user?.uid}`;
+
   useEffect(() => {
-    const boardRef = ref(db, `contacts/${user?.uid}`);
-    return onValue(boardRef, (snapshot) => {
-      if (!snapshot.exists()) return setContacts([]);
+    if (!user?.uid) return;
+
+    return onValue(ref(db, contactsPath), (snapshot) => {
+      if (!snapshot.exists()) {
+        setContacts([]);
+        return;
+      }
+
       const data = snapshot.val();
-      const mapped = Object.keys(data).map((id) => ({ id, ...data[id] }));
+      const mapped = Object.keys(data).map((id) => ({
+        id,
+        ...data[id],
+      }));
+
       setContacts(mapped.sort((a, b) => a.name.localeCompare(b.name)));
     });
-  }, [user]);
+  }, [user, contactsPath]);
 
   useEffect(() => {
     function handle(e: MouseEvent) {
@@ -49,12 +69,14 @@ export default function AddTask() {
         !refAssigned.current.contains(e.target as Node)
       )
         setDropAssigned(false);
+
       if (
         refCategory.current &&
         !refCategory.current.contains(e.target as Node)
       )
         setDropCategory(false);
     }
+
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
@@ -66,8 +88,9 @@ export default function AddTask() {
   }
 
   async function save() {
-    const reftoTask = ref(db, `tasks/${user?.uid}`);
-    await push(reftoTask, {
+    if (!user?.uid) return;
+
+    await push(ref(db, tasksPath), {
       title,
       description,
       assignedTo,
@@ -84,6 +107,8 @@ export default function AddTask() {
     setCategory("");
     setPriority("urgent");
     setDate("");
+
+    router.push("/Dashboard/Board");
   }
 
   return (
@@ -138,7 +163,10 @@ export default function AddTask() {
                       checked={assignedTo.includes(c.name)}
                       onChange={() => toggleAssigned(c.name)}
                     />
-                    <div className="h-8 w-8 rounded-full bg-[#6f6fff] text-white flex items-center justify-center text-sm font-semibold">
+                    <div
+                      className="h-8 w-8 rounded-full text-white flex items-center justify-center text-sm font-semibold"
+                      style={{ backgroundColor: c.color }}
+                    >
                       {c.name.charAt(0).toUpperCase()}
                     </div>
                     <span>{c.name}</span>
@@ -166,34 +194,32 @@ export default function AddTask() {
               <button
                 type="button"
                 onClick={() => setPriority("urgent")}
-                className={`flex-1 h-11 rounded-xl font-semibold transition ${
+                className={`flex-1 h-11 rounded-xl font-semibold ${
                   priority === "urgent"
                     ? "bg-red-500 text-white"
-                    : "bg-red-500/20 text-red-600 hover:bg-red-500/30"
+                    : "bg-red-500/20 text-red-600"
                 }`}
               >
                 Urgent
               </button>
-
               <button
                 type="button"
                 onClick={() => setPriority("medium")}
-                className={`flex-1 h-11 rounded-xl font-semibold transition ${
+                className={`flex-1 h-11 rounded-xl font-semibold ${
                   priority === "medium"
                     ? "bg-yellow-400 text-black"
-                    : "bg-yellow-400/20 text-yellow-700 hover:bg-yellow-400/30"
+                    : "bg-yellow-400/20 text-yellow-700"
                 }`}
               >
                 Medium
               </button>
-
               <button
                 type="button"
                 onClick={() => setPriority("low")}
-                className={`flex-1 h-11 rounded-xl font-semibold transition ${
+                className={`flex-1 h-11 rounded-xl font-semibold ${
                   priority === "low"
                     ? "bg-green-500 text-white"
-                    : "bg-green-500/20 text-green-700 hover:bg-green-500/30"
+                    : "bg-green-500/20 text-green-700"
                 }`}
               >
                 Low

@@ -31,9 +31,8 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <DashboardSidebar />
-
-      <SidebarInset>
-        <header className="sticky top-0 z-50 flex h-14 items-center border-b border-border bg-background px-8">
+      <SidebarInset className="flex flex-col h-screen overflow-hidden">
+        <header className="sticky top-0 z-50 flex h-14 shrink-0 items-center border-b border-border bg-background px-8">
           <SidebarTrigger />
 
           <h1 className="ml-4 font-medium text-foreground">Dashboard</h1>
@@ -58,24 +57,32 @@ export default function DashboardLayout({
                 alt="arrow"
                 width={22}
                 height={22}
-                className="invert-0 dark:invert"
+                className="dark:invert"
               />
             </button>
 
             {dropDown && (
-              <div className="absolute right-0 top-14 w-56 rounded-2xl border border-border bg-card p-4 shadow-2xl">
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-xl px-3 py-2 text-left text-lg font-medium text-destructive hover:bg-muted transition"
-                >
-                  Log out
-                </button>
-              </div>
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setDropDown(false)}
+                />
+                <div className="absolute right-0 top-14 z-20 w-56 rounded-2xl border border-border bg-card p-4 shadow-2xl">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full rounded-xl px-3 py-2 text-left text-lg font-medium text-destructive hover:bg-muted transition"
+                  >
+                    Log out
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </header>
 
-        <main className="flex-1 bg-background">{children}</main>
+        <main className="flex-1 min-h-0 w-full overflow-y-auto bg-background">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

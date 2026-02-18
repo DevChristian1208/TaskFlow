@@ -39,7 +39,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-6 relative">
+    <div className="min-h-screen bg-[#E8E9FF] flex items-center justify-center px-6 relative">
       <div className="absolute -top-10 left-6 flex items-center">
         <Image src="/Taskflow.png" alt="logo" width={200} height={200} />
       </div>

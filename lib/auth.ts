@@ -1,4 +1,4 @@
-import { auth } from "@/myapp/lib/firebase";
+import { auth } from "./firebase";
 import { 
   createUserWithEmailAndPassword, 
   updateProfile, 

@@ -4,14 +4,12 @@ import { useAuth } from "@/lib/Context/AuthContext";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { ref, onValue, update, remove } from "firebase/database";
-
 import {
   DragDropContext,
   Droppable,
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-
 import { Trash2 } from "lucide-react";
 
 type Task = {
@@ -24,37 +22,64 @@ type Task = {
   status: "todo" | "progress" | "done";
 };
 
+type Contact = {
+  id: string;
+  name: string;
+  color: string;
+};
+
 export default function Board() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const basePath = (user as any)?.isGuest
+    ? `guestTasks/${user?.uid}`
+    : `tasks/${user?.uid}`;
+
+  const contactsPath = (user as any)?.isGuest
+    ? `guestContacts/${user?.uid}`
+    : `contacts/${user?.uid}`;
+
   useEffect(() => {
     if (!user?.uid) return;
-    const tasksRef = ref(db, `tasks/${user.uid}`);
-    return onValue(tasksRef, (snapshot) => {
+
+    const unsubTasks = onValue(ref(db, basePath), (snapshot) => {
       if (!snapshot.exists()) {
         setTasks([]);
         return;
       }
-
       const data = snapshot.val();
-      console.log(data);
       setTasks(Object.keys(data).map((id) => ({ id, ...data[id] })));
     });
-  }, [user]);
+
+    const unsubContacts = onValue(ref(db, contactsPath), (snapshot) => {
+      if (!snapshot.exists()) {
+        setContacts([]);
+        return;
+      }
+      const data = snapshot.val();
+      setContacts(Object.keys(data).map((id) => ({ id, ...data[id] })));
+    });
+
+    return () => {
+      unsubTasks();
+      unsubContacts();
+    };
+  }, [user, basePath, contactsPath]);
+
+  const getColor = (name: string) =>
+    contacts.find((c) => c.name === name)?.color || "#6f6fff";
 
   if (!mounted) {
     return (
       <div className="p-10 min-h-screen bg-background text-foreground">
-        <h1 className="text-5xl font-semibold tracking-tight text-[#6f6fff] mb-12">
-          Board
-        </h1>
-        <p className="text-muted-foreground">Loading board…</p>
+        Loading…
       </div>
     );
   }
@@ -71,15 +96,14 @@ export default function Board() {
   async function handleDragEnd(result: DropResult) {
     if (!result.destination || !user?.uid) return;
 
-    await update(ref(db, `tasks/${user.uid}/${result.draggableId}`), {
+    await update(ref(db, `${basePath}/${result.draggableId}`), {
       status: result.destination.droppableId,
     });
   }
 
   async function deleteTask(id: string) {
     if (!user?.uid) return;
-    const TaskRefRemove = ref(db, `tasks/${user.uid}/${id}`);
-    await remove(TaskRefRemove);
+    await remove(ref(db, `${basePath}/${id}`));
   }
 
   return (
@@ -151,7 +175,10 @@ export default function Board() {
                                   {assigned.map((name, i) => (
                                     <div
                                       key={i}
-                                      className="h-8 w-8 rounded-full bg-[#6f6fff] text-white flex items-center justify-center text-sm font-semibold"
+                                      className="h-8 w-8 rounded-full text-white flex items-center justify-center text-sm font-semibold"
+                                      style={{
+                                        backgroundColor: getColor(name),
+                                      }}
                                     >
                                       {name.charAt(0).toUpperCase()}
                                     </div>
