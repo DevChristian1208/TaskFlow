@@ -21,10 +21,8 @@ export default function Contacts() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -69,6 +67,24 @@ export default function Contacts() {
     });
   }, [user, basePath]);
 
+  async function createContact(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user?.uid) return;
+
+    await push(ref(db, basePath), {
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      createdAt: Date.now(),
+    });
+
+    setName("");
+    setEmail("");
+    setPhone("");
+    setOpenCreate(false);
+  }
+
   async function deleteContact(id: string) {
     if (!user?.uid) return;
     await remove(ref(db, `${basePath}/${id}`));
@@ -81,12 +97,66 @@ export default function Contacts() {
         <div className="p-6 shrink-0">
           <button
             onClick={() => setOpenCreate(true)}
-            className="w-full h-14 rounded-2xl bg-primary text-primary-foreground text-lg font-medium flex items-center justify-center gap-3 hover:opacity-90 transition"
+            className="w-full h-14 rounded-2xl bg-primary text-primary-foreground text-lg font-medium flex items-center justify-center gap-3 hover:opacity-90 transition cursor-pointer"
           >
             Add new contact <UserPlus />
           </button>
-        </div>
+          {openCreate && (
+            <div
+              onClick={() => setOpenCreate(false)}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            >
+              <form
+                onClick={(e) => e.stopPropagation()}
+                className="bg-card p-8 rounded-3xl w-[420px] space-y-4 shadow-2xl"
+                onSubmit={createContact}
+              >
+                <h2 className="text-2xl font-semibold">Create Contact</h2>
 
+                <input
+                  required
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <input
+                  required
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <input
+                  placeholder="Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setOpenCreate(false)}
+                    className="px-4 py-2 rounded-xl border"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-primary text-primary-foreground"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
         <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6">
           {loading ? (
             <p className="text-muted-foreground text-center mt-10">
