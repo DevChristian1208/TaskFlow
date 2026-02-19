@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   function setGuestUser(guestId: string) {
+    localStorage.setItem("guestId", guestId);
     setUser({
       uid: guestId,
       displayName: "Gast",
@@ -36,29 +37,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const guestId = localStorage.getItem("guestId");
-
-    if (guestId) {
-      setGuestUser(guestId);
-      setLoading(false);
-      return;
-    }
-
     const unsub = onAuthStateChanged(
       auth,
       (firebaseUser: FirebaseUser | null) => {
-        if (!firebaseUser) {
-          setUser(null);
+        if (firebaseUser) {
+          localStorage.removeItem("guestId");
+
+          setUser({
+            uid: firebaseUser.uid,
+            displayName: firebaseUser.displayName || "User",
+            email: firebaseUser.email || "",
+            isGuest: false,
+          });
+
           setLoading(false);
           return;
         }
 
-        setUser({
-          uid: firebaseUser.uid,
-          displayName: firebaseUser.displayName || "User",
-          email: firebaseUser.email || "",
-          isGuest: false,
-        });
+        const guestId = localStorage.getItem("guestId");
+
+        if (guestId) {
+          setUser({
+            uid: guestId,
+            displayName: "Gast",
+            isGuest: true,
+          });
+        } else {
+          setUser(null);
+        }
 
         setLoading(false);
       }
