@@ -10,7 +10,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setGuestUser } = useAuth(); // ✅ NEU
+  const { setGuestUser } = useAuth(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,14 +33,10 @@ export default function LoginPage() {
     }
   }
 
-  // ✅ GUEST LOGIN OHNE FIREBASE AUTH
   async function handleGuestLogin() {
     const guestId = "guest_" + crypto.randomUUID();
-
     localStorage.setItem("guestId", guestId);
-
-    setGuestUser(guestId); // setzt User im Context
-
+    setGuestUser(guestId); 
     router.replace("/Dashboard");
   }
 
