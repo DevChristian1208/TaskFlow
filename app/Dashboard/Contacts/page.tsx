@@ -60,9 +60,14 @@ export default function Contacts() {
       }));
 
       list.sort((a, b) => a.name.localeCompare(b.name));
-
       setContacts(list);
-      setSelectedContact((prev) => prev ?? list[0]);
+
+      setSelectedContact((prev) => {
+        if (!prev) return list[0] ?? null;
+
+        const updated = list.find((c) => c.id === prev.id);
+        return updated ?? list[0] ?? null;
+      });
       setLoading(false);
     });
   }, [user, basePath]);
@@ -85,6 +90,20 @@ export default function Contacts() {
     setOpenCreate(false);
   }
 
+  async function saveEdit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user?.uid || !selectedContact) return;
+
+    await update(ref(db, `${basePath}/${selectedContact.id}`), {
+      name,
+      email,
+      phone,
+      color: selectedContact.color,
+    });
+
+    setOpenEdit(false);
+  }
+
   async function deleteContact(id: string) {
     if (!user?.uid) return;
     await remove(ref(db, `${basePath}/${id}`));
@@ -96,7 +115,12 @@ export default function Contacts() {
       <div className="border-r border-border bg-card flex flex-col h-full overflow-hidden">
         <div className="p-6 shrink-0">
           <button
-            onClick={() => setOpenCreate(true)}
+            onClick={() => {
+              setName("");
+              setEmail("");
+              setPhone("");
+              setOpenCreate(true);
+            }}
             className="w-full h-14 rounded-2xl bg-primary text-primary-foreground text-lg font-medium flex items-center justify-center gap-3 hover:opacity-90 transition cursor-pointer"
           >
             Add new contact <UserPlus />
@@ -141,6 +165,61 @@ export default function Contacts() {
                   <button
                     type="button"
                     onClick={() => setOpenCreate(false)}
+                    className="px-4 py-2 rounded-xl border"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-primary text-primary-foreground"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+          {openEdit && (
+            <div
+              onClick={() => setOpenEdit(false)}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            >
+              <form
+                onClick={(e) => e.stopPropagation()}
+                className="bg-card p-8 rounded-3xl w-[420px] space-y-4 shadow-2xl"
+                onSubmit={saveEdit}
+              >
+                <h2 className="text-2xl font-semibold">Edit Contact</h2>
+
+                <input
+                  required
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <input
+                  required
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <input
+                  placeholder="Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full h-12 rounded-xl border border-border px-4 bg-background"
+                />
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setOpenEdit(false)}
                     className="px-4 py-2 rounded-xl border"
                   >
                     Cancel
@@ -252,3 +331,4 @@ export default function Contacts() {
     </div>
   );
 }
+
