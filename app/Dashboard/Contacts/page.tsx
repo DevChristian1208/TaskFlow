@@ -77,9 +77,7 @@ export default function Contacts() {
 
   return (
     <div className="h-full w-full overflow-hidden grid md:grid-cols-[360px_1fr] bg-background">
-      {/* LINKER BEREICH: KONTAKTLISTE */}
       <div className="border-r border-border bg-card flex flex-col h-full overflow-hidden">
-        {/* Button bleibt oben fixiert durch shrink-0 */}
         <div className="p-6 shrink-0">
           <button
             onClick={() => setOpenCreate(true)}
@@ -89,7 +87,6 @@ export default function Contacts() {
           </button>
         </div>
 
-        {/* Scrollbarer Bereich: flex-1 füllt den Rest, min-h-0 ermöglicht Scrolling */}
         <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6">
           {loading ? (
             <p className="text-muted-foreground text-center mt-10">
@@ -125,7 +122,6 @@ export default function Contacts() {
         </div>
       </div>
 
-      {/* RECHTER BEREICH: DETAILS */}
       <div className="hidden md:block h-full overflow-y-auto bg-muted/30 p-12">
         {selectedContact && (
           <div className="max-w-xl animate-in fade-in slide-in-from-right-4 duration-300">
