@@ -52,10 +52,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#E8E9FF] dark:bg-black flex items-center justify-center px-6 relative transition-colors duration-300">
-      <div className="absolute -top-10 left-6 flex items-center">
-        <Image src="/Taskflow.png" alt="logo" width={200} height={200} priority />
-      </div>
+    <div className="min-h-screen bg-[#E8E9FF] dark:bg-black flex flex-col items-center justify-center gap-6 px-6 py-12 transition-colors duration-300">
+      <Image
+        src="/Taskflow.png"
+        alt="logo"
+        width={200}
+        height={200}
+        priority
+        className="h-20 w-20 sm:h-28 sm:w-28 shrink-0"
+      />
 
       <div className="w-full max-w-md bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl rounded-3xl p-10 transition-all">
         <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white text-center mb-2">
