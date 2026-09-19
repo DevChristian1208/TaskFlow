@@ -9,10 +9,10 @@ import Link from "next/link";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 
 const inputClass =
-  "input-autofill-fix mt-2 w-full h-14 rounded-2xl border border-border bg-card px-4 text-foreground placeholder:text-muted-foreground shadow-apple-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 ease-apple";
+  "input-autofill-fix mt-1 w-full h-11 roomy:h-14 rounded-2xl border border-border bg-card px-4 text-foreground placeholder:text-muted-foreground shadow-apple-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 ease-apple";
 
 const inputClassNoMargin =
-  "input-autofill-fix w-full h-14 rounded-2xl border border-border bg-card px-4 text-foreground placeholder:text-muted-foreground shadow-apple-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 ease-apple";
+  "input-autofill-fix w-full h-11 roomy:h-14 rounded-2xl border border-border bg-card px-4 text-foreground placeholder:text-muted-foreground shadow-apple-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 ease-apple";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -42,48 +42,51 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#E8E9FF] dark:bg-black flex flex-col items-center justify-center gap-6 px-6 py-12 transition-colors duration-300">
-      <Image
-        src="/Taskflow.png"
-        alt="logo"
-        width={200}
-        height={200}
-        priority
-        className="h-20 w-20 sm:h-28 sm:w-28 shrink-0"
-      />
+    <div className="h-dvh overflow-hidden bg-[#E8E9FF] dark:bg-black flex flex-col transition-colors duration-300">
+      <header className="w-full shrink-0 px-5 py-3 roomy:px-10 roomy:py-8">
+        <Image
+          src="/taskflow-logo.png"
+          alt="TaskFlow"
+          width={856}
+          height={241}
+          priority
+          className="h-8 roomy:h-9 w-auto"
+        />
+      </header>
 
-      <div className="w-full max-w-md bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl rounded-3xl p-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white text-center mb-2">
+      <div className="flex-1 min-h-0 flex items-center justify-center px-5 pb-4 roomy:px-6 roomy:pb-12">
+        <div className="w-full max-w-md max-h-full overflow-hidden bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl rounded-3xl p-6 roomy:p-10">
+        <h1 className="text-xl roomy:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white text-center mb-1.5 roomy:mb-2">
           Konto erstellen
         </h1>
 
         {success ? (
           <>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4 roomy:mb-8">
               Willkommen! Bitte gib deine Daten ein.
             </p>
 
-            <div className="flex flex-col items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-2xl py-6 px-4 text-green-600 dark:text-green-400 text-center mb-6">
-              <CheckCircle2 size={32} />
-              <p className="font-medium">
+            <div className="flex flex-col items-center gap-2 roomy:gap-3 bg-green-500/10 border border-green-500/20 rounded-2xl py-4 roomy:py-6 px-4 text-green-600 dark:text-green-400 text-center mb-4 roomy:mb-6">
+              <CheckCircle2 className="h-7 w-7 roomy:h-8 roomy:w-8" />
+              <p className="text-sm roomy:text-base font-medium">
                 Konto erfolgreich erstellt, {name}!
               </p>
             </div>
 
             <button
               onClick={() => router.push("/Dashboard")}
-              className="w-full h-14 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-[#1d1d1f] dark:hover:bg-gray-200 shadow-apple-md transition-all duration-200 ease-apple text-lg cursor-pointer"
+              className="w-full h-11 roomy:h-14 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-[#1d1d1f] dark:hover:bg-gray-200 shadow-apple-md transition-all duration-200 ease-apple text-base roomy:text-lg cursor-pointer"
             >
               Los geht&apos;s
             </button>
           </>
         ) : (
           <>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4 roomy:mb-8">
               Willkommen! Bitte gib deine Daten ein.
             </p>
 
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-3 roomy:space-y-6">
               <div>
                 <label className="text-gray-700 dark:text-gray-300 text-sm font-medium">
                   E-Mail
@@ -116,7 +119,7 @@ export default function RegisterPage() {
                   Passwort
                 </label>
 
-                <div className="relative mt-2">
+                <div className="relative mt-1">
                   <input
                     type={showPassword ? "text" : "password"}
                     required
@@ -130,19 +133,19 @@ export default function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200 ease-apple"
                   >
-                    {showPassword ? <EyeOff /> : <Eye />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
 
               {errorMsg && (
-                <p className="text-red-600 text-center">{errorMsg}</p>
+                <p className="text-red-600 text-sm text-center">{errorMsg}</p>
               )}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-[#1d1d1f] dark:hover:bg-gray-200 shadow-apple-md transition-all duration-200 ease-apple text-lg cursor-pointer disabled:opacity-60"
+                className="w-full h-11 roomy:h-14 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-[#1d1d1f] dark:hover:bg-gray-200 shadow-apple-md transition-all duration-200 ease-apple text-base roomy:text-lg cursor-pointer disabled:opacity-60"
               >
                 {loading ? "Registriere…" : "Registrieren"}
               </button>
@@ -157,7 +160,7 @@ export default function RegisterPage() {
                 </Link>
               </p>
             </form>
-            <div className="mt-8 flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+            <div className="mt-4 roomy:mt-8 flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
               <Link
                 href="/ImpressumundDatenschutz/LegalNotice"
                 className="hover:underline"
@@ -173,6 +176,7 @@ export default function RegisterPage() {
             </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );
