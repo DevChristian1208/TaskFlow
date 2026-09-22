@@ -4,8 +4,10 @@ import {
   updateProfile,
   signInWithEmailAndPassword,
   signInAnonymously,
+  getAdditionalUserInfo,
   UserCredential
 } from "firebase/auth";
+import { seedGuestDemoData } from "./guestSeed";
 
 export async function register(email: string, password: string, name: string) {
   const userCredential =
@@ -25,5 +27,11 @@ export async function login(email: string, password: string) {
 }
 
 export async function guestLogin() {
-  return signInAnonymously(auth);
+  const credential = await signInAnonymously(auth);
+
+  if (getAdditionalUserInfo(credential)?.isNewUser) {
+    await seedGuestDemoData(credential.user.uid);
+  }
+
+  return credential;
 }

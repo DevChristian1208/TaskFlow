@@ -14,20 +14,30 @@ import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [dropDown, setDropDown] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/Login");
+    }
+  }, [loading, user, router]);
 
   async function handleLogout() {
     await signOut(auth);
     router.replace("/Login");
   }
+
+  if (loading) return null;
+  if (!user) return null;
 
   return (
     <SidebarProvider>
