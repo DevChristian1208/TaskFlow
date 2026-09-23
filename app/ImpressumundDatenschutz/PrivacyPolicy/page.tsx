@@ -60,13 +60,50 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                2. Verarbeitung personenbezogener Daten
+                2. Hosting &amp; Server-Logfiles
               </h2>
               <p className="mt-2">
-                Bei der Nutzung von Taskflow werden personenbezogene Daten
-                verarbeitet, die für Authentifizierung und Nutzung der
-                Task-Management-Funktionen erforderlich sind. Der Umfang
-                unterscheidet sich dabei je nachdem, ob du Taskflow als
+                Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133,
+                Walnut, CA 91789, USA, gehostet. Beim Aufruf von Taskflow
+                erhebt Vercel automatisch technisch notwendige Informationen
+                (sog. Server-Logfiles), u. a. IP-Adresse, Datum und Uhrzeit
+                des Zugriffs, aufgerufene Seite, Browsertyp und
+                Betriebssystem sowie die zuvor besuchte Seite (Referrer-URL).
+                Diese Daten dienen ausschließlich dem technisch fehlerfreien
+                und sicheren Betrieb der Website und werden nicht mit anderen
+                Daten zusammengeführt.
+              </p>
+              <p className="mt-2">
+                Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+                Interesse an einem sicheren und stabilen Betrieb der
+                Website). Da Vercel Inc. in den USA ansässig ist, kann es
+                dabei zu einer Übermittlung personenbezogener Daten in ein
+                Drittland kommen. Diese erfolgt auf Grundlage der
+                EU-Standardvertragsklauseln. Weitere Informationen:{" "}
+                <a
+                  href="https://vercel.com/legal/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  vercel.com/legal/privacy-policy
+                </a>
+                .
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                3. Verarbeitung personenbezogener Daten
+              </h2>
+              <p className="mt-2">
+                Darüber hinaus werden bei der Nutzung von Taskflow
+                personenbezogene Daten verarbeitet, die für
+                Authentifizierung und Nutzung der Task-Management-Funktionen
+                erforderlich sind. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
+                DSGVO (Erfüllung eines Vertrags bzw. Durchführung
+                vorvertraglicher Maßnahmen). Der Umfang der verarbeiteten
+                Daten unterscheidet sich dabei je nachdem, ob du Taskflow als
                 registrierter Nutzer oder im Gast-Modus verwendest.
               </p>
 
@@ -76,8 +113,7 @@ export default function PrivacyPolicy() {
               <p className="mt-2">
                 Bei der Registrierung werden E-Mail-Adresse, ein von dir
                 gewählter Name sowie ein Passwort (verschlüsselt über Firebase
-                Authentication) gespeichert. Optional kannst du ein Profilbild
-                hinterlegen, das über Firebase Storage gespeichert wird. Deine
+                Authentication) gespeichert. Deine
                 erstellten Tasks, Boards, Kontakte und Kategorien werden
                 dauerhaft mit deinem Konto verknüpft in der Firebase Realtime
                 Database gespeichert, bis du sie löschst oder dein Konto
@@ -94,20 +130,27 @@ export default function PrivacyPolicy() {
                 Firebase Realtime Database gespeichert – getrennt von den
                 Daten registrierter Nutzer – und bleiben so lange bestehen,
                 bis du sie löschst, dein Gast-Konto entfernst oder die
-                Browser-Daten (siehe Abschnitt 4) gelöscht werden. Eine
+                Browser-Daten (siehe Abschnitt 5) gelöscht werden. Eine
                 dauerhafte Zuordnung zu deiner Person findet nicht statt.
               </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                3. Firebase
+                4. Firebase
               </h2>
               <p className="mt-2">
-                Taskflow nutzt Firebase-Dienste der Google Ireland Limited
-                (Firebase Authentication, Realtime Database und Storage).
-                Dabei werden u. a. E-Mail-Adresse (nur registrierte Nutzer),
-                Benutzer-ID sowie technisch notwendige Metadaten verarbeitet.
+                Taskflow nutzt Firebase-Dienste der Google Ireland Limited,
+                Gordon House, Barrow Street, Dublin 4, Irland (Firebase
+                Authentication und Realtime Database). Dabei werden
+                u. a. E-Mail-Adresse (nur registrierte Nutzer), Benutzer-ID
+                sowie technisch notwendige Metadaten verarbeitet. Die
+                Realtime Database ist in der Region Europa (europe-west1)
+                gehostet; eine Verarbeitung durch Google-Server außerhalb der
+                EU/des EWR (insbesondere in den USA) ist im Rahmen der
+                Infrastruktur von Google jedoch nicht vollständig
+                ausgeschlossen. Eine solche Übermittlung erfolgt auf
+                Grundlage der EU-Standardvertragsklauseln.
               </p>
               <p className="mt-2">
                 Weitere Informationen findest du unter:
@@ -125,7 +168,7 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                4. Lokale Speicherung im Browser
+                5. Cookies &amp; lokale Speicherung im Browser
               </h2>
               <p className="mt-2">
                 Taskflow speichert einige Einstellungen ausschließlich lokal
@@ -135,19 +178,31 @@ export default function PrivacyPolicy() {
                 benachrichtigt wurdest. Diese Daten verlassen deinen Browser
                 nicht und werden nicht an den Verantwortlichen übertragen.
               </p>
+              <p className="mt-2">
+                Zusätzlich setzt Taskflow ein technisch notwendiges Cookie
+                (<code className="text-sm bg-gray-100 px-1 py-0.5 rounded">
+                  sidebar_state
+                </code>
+                , Speicherdauer 7 Tage), um den ein-/ausgeklappten Zustand
+                der Seitenleiste zu merken. Es dient ausschließlich der
+                Funktionalität, nicht der Analyse oder Werbung.
+                Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO bzw. § 25 Abs.
+                2 Nr. 2 TTDSG; eine Einwilligung ist für dieses rein
+                funktionale Cookie nicht erforderlich.
+              </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                5. Speicherung &amp; Kontolöschung
+                6. Speicherung &amp; Kontolöschung
               </h2>
               <p className="mt-2">
                 Sowohl registrierte Nutzer als auch Gäste können ihr Konto
                 selbstständig unter Einstellungen → Account → „Konto löschen“
                 entfernen. Dabei werden dein Nutzerkonto sowie sämtliche damit
-                verknüpften Daten (Tasks, Boards, Kontakte, Kategorien,
-                ggf. Profilbild) unwiderruflich aus der Firebase Realtime
-                Database bzw. Firebase Storage gelöscht. Bei registrierten
+                verknüpften Daten (Tasks, Boards, Kontakte, Kategorien)
+                unwiderruflich aus der Firebase Realtime Database gelöscht.
+                Bei registrierten
                 Nutzern ist dafür aus Sicherheitsgründen eine erneute
                 Passwort-Eingabe erforderlich. Alternativ kannst du die
                 Löschung auch formlos per E-Mail an den Verantwortlichen
@@ -157,18 +212,26 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                6. Rechte der betroffenen Personen
+                7. Rechte der betroffenen Personen
               </h2>
               <p className="mt-2">
                 Du hast jederzeit das Recht auf Auskunft, Berichtigung,
-                Löschung, Einschränkung der Verarbeitung sowie Beschwerde bei
-                einer zuständigen Aufsichtsbehörde gemäß Art. 15 ff. DSGVO.
+                Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit
+                sowie Widerspruch gegen die Verarbeitung deiner Daten gemäß
+                Art. 15 ff. DSGVO. Wende dich hierfür gerne direkt an den in
+                Abschnitt 1 genannten Verantwortlichen.
+              </p>
+              <p className="mt-2">
+                Daneben besteht ein Beschwerderecht bei einer
+                Datenschutz-Aufsichtsbehörde, z. B. beim für Bayern
+                zuständigen Bayerischen Landesamt für Datenschutzaufsicht
+                (BayLDA), Promenade 27, 91522 Ansbach.
               </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                7. Änderungen
+                8. Änderungen
               </h2>
               <p className="mt-2">
                 Diese Datenschutzerklärung kann angepasst werden, wenn sich

@@ -5,16 +5,10 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/Context/AuthContext";
 import { useBoards } from "@/lib/Context/BoardContext";
-import { auth, db, storage } from "@/lib/firebase";
-import { deleteAccount, reauthenticate, withTimeout } from "@/lib/auth";
+import { auth, db } from "@/lib/firebase";
+import { deleteAccount, reauthenticate } from "@/lib/auth";
 import { updateProfile, signOut } from "firebase/auth";
 import { ref, get } from "firebase/database";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
 import {
   ACCENT_COLORS,
   applyAccentColor,
@@ -42,7 +36,6 @@ import {
   Pencil,
   Trash2,
   Plus,
-  Camera,
   AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
@@ -66,8 +59,6 @@ export default function SettingsPage() {
   const [renameValue, setRenameValue] = useState("");
   const [newBoardName, setNewBoardName] = useState("");
   const [exporting, setExporting] = useState(false);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [photoError, setPhotoError] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -93,50 +84,6 @@ export default function SettingsPage() {
     refreshUser();
     setNameSaved(true);
     setTimeout(() => setNameSaved(false), 2000);
-  }
-
-  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file || !auth.currentUser) return;
-
-    setPhotoError("");
-
-    if (!file.type.startsWith("image/")) {
-      setPhotoError("Bitte wähle eine Bilddatei aus.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoError("Das Bild darf maximal 5 MB groß sein.");
-      return;
-    }
-
-    setUploadingPhoto(true);
-    try {
-      const fileRef = storageRef(storage, `avatars/${auth.currentUser.uid}/avatar`);
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      await updateProfile(auth.currentUser, { photoURL: url });
-      refreshUser();
-    } catch (err) {
-      setPhotoError("Upload fehlgeschlagen. Bitte erneut versuchen.");
-    } finally {
-      setUploadingPhoto(false);
-    }
-  }
-
-  async function removePhoto() {
-    if (!auth.currentUser) return;
-    setUploadingPhoto(true);
-    setPhotoError("");
-    try {
-      await updateProfile(auth.currentUser, { photoURL: "" });
-      refreshUser();
-      const fileRef = storageRef(storage, `avatars/${auth.currentUser.uid}/avatar`);
-      await withTimeout(deleteObject(fileRef), 5000);
-    } finally {
-      setUploadingPhoto(false);
-    }
   }
 
   function chooseAccent(hex: string) {
@@ -284,35 +231,6 @@ export default function SettingsPage() {
                   {user?.displayName?.charAt(0).toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
-
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <label className="px-4 py-2 rounded-full border border-border bg-card text-sm font-medium hover:bg-accent transition-colors duration-200 ease-apple cursor-pointer flex items-center gap-2">
-                    <Camera size={14} />
-                    {uploadingPhoto ? "Lade hoch…" : "Foto ändern"}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                      disabled={uploadingPhoto}
-                      className="hidden"
-                    />
-                  </label>
-                  {user?.photoURL && (
-                    <button
-                      type="button"
-                      onClick={removePhoto}
-                      disabled={uploadingPhoto}
-                      className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-200 ease-apple disabled:opacity-50"
-                    >
-                      Entfernen
-                    </button>
-                  )}
-                </div>
-                {photoError && (
-                  <p className="text-xs text-destructive">{photoError}</p>
-                )}
-              </div>
             </div>
 
             <form onSubmit={saveName} className="space-y-4">

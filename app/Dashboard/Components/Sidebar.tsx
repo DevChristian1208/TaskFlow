@@ -106,6 +106,21 @@ export function DashboardSidebar() {
           </div>
 
           <ThemeToggle />
+
+          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+            <Link
+              href="/ImpressumundDatenschutz/LegalNotice"
+              className="hover:underline"
+            >
+              Impressum
+            </Link>
+            <Link
+              href="/ImpressumundDatenschutz/PrivacyPolicy"
+              className="hover:underline"
+            >
+              Datenschutz
+            </Link>
+          </div>
         </div>
       </SidebarContent>
     </Sidebar>

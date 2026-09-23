@@ -32,7 +32,7 @@ export default function LegalNotice() {
         <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white shadow-sm p-6 sm:p-8">
           <header className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Impressum</h1>
-            <p className="mt-1 text-sm text-gray-600">Stand: Oktober 2025</p>
+            <p className="mt-1 text-sm text-gray-600">Stand: September 2026</p>
           </header>
 
           <section className="space-y-6 text-gray-800 leading-relaxed">
@@ -66,7 +66,7 @@ export default function LegalNotice() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
+                Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
               </h2>
               <p className="mt-2">
                 Christian Seidel

@@ -116,6 +116,21 @@ export default function ResetPassword() {
             </button>
           </form>
         )}
+
+        <div className="mt-4 roomy:mt-8 flex justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+          <Link
+            href="/ImpressumundDatenschutz/LegalNotice"
+            className="hover:underline"
+          >
+            Impressum
+          </Link>
+          <Link
+            href="/ImpressumundDatenschutz/PrivacyPolicy"
+            className="hover:underline"
+          >
+            Datenschutz
+          </Link>
+        </div>
         </div>
       </div>
     </div>
