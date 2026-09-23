@@ -68,8 +68,6 @@ export async function deleteAccount() {
   await Promise.all(paths.map((p) => remove(dbRef(db, `${p}/${uid}`))));
 
   if (!user.isAnonymous) {
-    // Best-effort: Firebase Storage can hang retrying on transient/CORS
-    // errors, so this must never block the actual account deletion.
     await withTimeout(
       deleteObject(storageRef(storage, `avatars/${uid}/avatar`)),
       5000

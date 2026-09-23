@@ -28,7 +28,6 @@ export default function PrivacyPolicy() {
         </div>
       </div>
 
-      {/* Content */}
       <main className="px-4 pb-16 pt-28">
         <div className="mx-auto w-full max-w-3xl rounded-2xl bg-white shadow-sm p-6 sm:p-8">
           <header className="mb-8">

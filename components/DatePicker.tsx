@@ -23,7 +23,6 @@ export default function DatePicker({
 
   useEffect(() => {
     if (open) setViewMonth(selected || new Date());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {

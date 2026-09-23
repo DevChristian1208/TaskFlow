@@ -133,7 +133,6 @@ export default function MainContent() {
     });
 
     sessionStorage.setItem(flagKey, "1");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notifPermission, upcomingTasks.length]);
 
   function requestNotifications() {
