@@ -1,12 +1,17 @@
-import { auth } from "./firebase";
+import { auth, db, storage } from "./firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
   signInAnonymously,
   getAdditionalUserInfo,
+  deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   UserCredential
 } from "firebase/auth";
+import { ref as dbRef, remove } from "firebase/database";
+import { ref as storageRef, deleteObject } from "firebase/storage";
 import { seedGuestDemoData } from "./guestSeed";
 
 export async function register(email: string, password: string, name: string) {
@@ -34,4 +39,42 @@ export async function guestLogin() {
   }
 
   return credential;
+}
+
+export async function reauthenticate(password: string) {
+  const user = auth.currentUser;
+  if (!user?.email) throw new Error("no-email-user");
+
+  const credential = EmailAuthProvider.credential(user.email, password);
+  await reauthenticateWithCredential(user, credential);
+}
+
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | void> {
+  return Promise.race([
+    promise.catch(() => {}),
+    new Promise<void>((resolve) => setTimeout(resolve, ms)),
+  ]);
+}
+
+export async function deleteAccount() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const uid = user.uid;
+  const paths = user.isAnonymous
+    ? ["guestTasks", "guestBoards", "guestContacts", "guestCategories"]
+    : ["tasks", "boards", "contacts", "categories"];
+
+  await Promise.all(paths.map((p) => remove(dbRef(db, `${p}/${uid}`))));
+
+  if (!user.isAnonymous) {
+    // Best-effort: Firebase Storage can hang retrying on transient/CORS
+    // errors, so this must never block the actual account deletion.
+    await withTimeout(
+      deleteObject(storageRef(storage, `avatars/${uid}/avatar`)),
+      5000
+    );
+  }
+
+  await deleteUser(user);
 }

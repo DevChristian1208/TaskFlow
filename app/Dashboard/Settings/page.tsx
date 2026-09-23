@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/Context/AuthContext";
 import { useBoards } from "@/lib/Context/BoardContext";
 import { auth, db, storage } from "@/lib/firebase";
+import { deleteAccount, reauthenticate, withTimeout } from "@/lib/auth";
 import { updateProfile, signOut } from "firebase/auth";
 import { ref, get } from "firebase/database";
 import {
@@ -42,6 +43,7 @@ import {
   Trash2,
   Plus,
   Camera,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -66,6 +68,10 @@ export default function SettingsPage() {
   const [exporting, setExporting] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -127,7 +133,7 @@ export default function SettingsPage() {
       await updateProfile(auth.currentUser, { photoURL: "" });
       refreshUser();
       const fileRef = storageRef(storage, `avatars/${auth.currentUser.uid}/avatar`);
-      await deleteObject(fileRef).catch(() => {});
+      await withTimeout(deleteObject(fileRef), 5000);
     } finally {
       setUploadingPhoto(false);
     }
@@ -159,6 +165,32 @@ export default function SettingsPage() {
   async function handleLogout() {
     await signOut(auth);
     router.replace("/Login");
+  }
+
+  async function handleDeleteAccount(e: React.FormEvent) {
+    e.preventDefault();
+    setDeleteError("");
+    setDeleting(true);
+
+    try {
+      if (!isGuest) {
+        await reauthenticate(deletePassword);
+      }
+      await deleteAccount();
+      if (user?.uid) {
+        localStorage.removeItem(`taskflow_active_board_${user.uid}`);
+      }
+      router.replace("/Login");
+    } catch (err) {
+      const code = (err as { code?: string })?.code;
+      if (code === "auth/wrong-password" || code === "auth/invalid-credential") {
+        setDeleteError("Passwort ist falsch.");
+      } else {
+        setDeleteError("Löschen fehlgeschlagen. Bitte erneut versuchen.");
+      }
+    } finally {
+      setDeleting(false);
+    }
   }
 
   async function exportData() {
@@ -525,8 +557,86 @@ export default function SettingsPage() {
           >
             <LogOut size={15} /> Abmelden
           </button>
+
+          <button
+            onClick={() => {
+              setDeletePassword("");
+              setDeleteError("");
+              setShowDeleteModal(true);
+            }}
+            className="flex items-center gap-2 text-sm text-destructive hover:opacity-70 transition-opacity duration-200 ease-apple"
+          >
+            <Trash2 size={15} /> Konto löschen
+          </button>
         </CardContent>
       </Card>
+
+      {showDeleteModal && (
+        <div
+          onClick={() => !deleting && setShowDeleteModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-200"
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={handleDeleteAccount}
+            className="glass-strong border border-border p-6 sm:p-8 rounded-3xl w-[440px] max-w-[92vw] space-y-4 shadow-apple-xl animate-in fade-in zoom-in-95 duration-200 ease-apple"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full flex items-center justify-center bg-destructive/10 text-destructive shrink-0">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <h2 className="text-xl font-semibold tracking-tight">
+                Konto löschen
+              </h2>
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              {isGuest
+                ? "Dein Gast-Konto und alle zugehörigen Daten (Tasks, Boards, Kontakte, Kategorien) werden unwiederbringlich gelöscht."
+                : "Dein Konto und alle zugehörigen Daten (Tasks, Boards, Kontakte, Kategorien, Profilbild) werden unwiederbringlich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."}
+            </p>
+
+            {!isGuest && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Passwort zur Bestätigung
+                </label>
+                <input
+                  type="password"
+                  required
+                  autoFocus
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  className="mt-1.5 w-full h-11 rounded-2xl border border-border px-4 bg-background outline-none focus:ring-2 focus:ring-ring transition-shadow duration-200 ease-apple"
+                />
+              </div>
+            )}
+
+            {deleteError && (
+              <p className="text-sm text-destructive">{deleteError}</p>
+            )}
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="px-4 py-2 rounded-full border border-border hover:bg-accent transition-colors duration-200 ease-apple disabled:opacity-50"
+              >
+                Abbrechen
+              </button>
+
+              <button
+                type="submit"
+                disabled={deleting}
+                className="px-4 py-2 rounded-full bg-destructive text-white shadow-apple-sm hover:opacity-90 transition-opacity duration-200 ease-apple disabled:opacity-50"
+              >
+                {deleting ? "Lösche…" : "Endgültig löschen"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

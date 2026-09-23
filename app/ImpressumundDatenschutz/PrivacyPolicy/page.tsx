@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
             <h1 className="text-3xl font-bold text-gray-900">
               Datenschutzerklärung
             </h1>
-            <p className="mt-1 text-sm text-gray-600">Stand: Oktober 2025</p>
+            <p className="mt-1 text-sm text-gray-600">Stand: September 2026</p>
           </header>
 
           <section className="space-y-6 text-gray-800 leading-relaxed">
@@ -64,8 +64,38 @@ export default function PrivacyPolicy() {
               </h2>
               <p className="mt-2">
                 Bei der Nutzung von Taskflow werden personenbezogene Daten
-                verarbeitet, die für Registrierung, Authentifizierung und
-                Nutzung der Task-Management-Funktionen erforderlich sind.
+                verarbeitet, die für Authentifizierung und Nutzung der
+                Task-Management-Funktionen erforderlich sind. Der Umfang
+                unterscheidet sich dabei je nachdem, ob du Taskflow als
+                registrierter Nutzer oder im Gast-Modus verwendest.
+              </p>
+
+              <h3 className="mt-4 font-semibold text-gray-900">
+                Registrierte Nutzer
+              </h3>
+              <p className="mt-2">
+                Bei der Registrierung werden E-Mail-Adresse, ein von dir
+                gewählter Name sowie ein Passwort (verschlüsselt über Firebase
+                Authentication) gespeichert. Optional kannst du ein Profilbild
+                hinterlegen, das über Firebase Storage gespeichert wird. Deine
+                erstellten Tasks, Boards, Kontakte und Kategorien werden
+                dauerhaft mit deinem Konto verknüpft in der Firebase Realtime
+                Database gespeichert, bis du sie löschst oder dein Konto
+                entfernst.
+              </p>
+
+              <h3 className="mt-4 font-semibold text-gray-900">Gast-Modus</h3>
+              <p className="mt-2">
+                Im Gast-Modus wird über Firebase Authentication ein anonymes,
+                temporäres Konto ohne E-Mail-Adresse oder Passwort erstellt.
+                Es werden keine Namens- oder Kontaktdaten von dir abgefragt.
+                Tasks, Boards, Kontakte und Kategorien, die du als Gast
+                anlegst, werden unter dieser anonymen Kennung ebenfalls in der
+                Firebase Realtime Database gespeichert – getrennt von den
+                Daten registrierter Nutzer – und bleiben so lange bestehen,
+                bis du sie löschst, dein Gast-Konto entfernst oder die
+                Browser-Daten (siehe Abschnitt 4) gelöscht werden. Eine
+                dauerhafte Zuordnung zu deiner Person findet nicht statt.
               </p>
             </div>
 
@@ -75,9 +105,9 @@ export default function PrivacyPolicy() {
               </h2>
               <p className="mt-2">
                 Taskflow nutzt Firebase-Dienste der Google Ireland Limited
-                (Firebase Authentication und Realtime Database). Dabei werden u.
-                a. E-Mail-Adresse, Benutzer-ID sowie technisch notwendige
-                Metadaten verarbeitet.
+                (Firebase Authentication, Realtime Database und Storage).
+                Dabei werden u. a. E-Mail-Adresse (nur registrierte Nutzer),
+                Benutzer-ID sowie technisch notwendige Metadaten verarbeitet.
               </p>
               <p className="mt-2">
                 Weitere Informationen findest du unter:
@@ -95,18 +125,39 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                4. Speicherung &amp; Kontolöschung
+                4. Lokale Speicherung im Browser
               </h2>
               <p className="mt-2">
-                Benutzerkonten können nicht selbstständig gelöscht werden. Zur
-                Löschung eines Kontos ist eine formlose Anfrage per E-Mail an
-                den Verantwortlichen erforderlich.
+                Taskflow speichert einige Einstellungen ausschließlich lokal
+                in deinem Browser (Local- bzw. Session-Storage), z. B. das
+                gewählte Farbschema, die zuletzt aktive Board-Auswahl sowie
+                einen Hinweis, ob du an einem Tag bereits über fällige Tasks
+                benachrichtigt wurdest. Diese Daten verlassen deinen Browser
+                nicht und werden nicht an den Verantwortlichen übertragen.
               </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                5. Rechte der betroffenen Personen
+                5. Speicherung &amp; Kontolöschung
+              </h2>
+              <p className="mt-2">
+                Sowohl registrierte Nutzer als auch Gäste können ihr Konto
+                selbstständig unter Einstellungen → Account → „Konto löschen“
+                entfernen. Dabei werden dein Nutzerkonto sowie sämtliche damit
+                verknüpften Daten (Tasks, Boards, Kontakte, Kategorien,
+                ggf. Profilbild) unwiderruflich aus der Firebase Realtime
+                Database bzw. Firebase Storage gelöscht. Bei registrierten
+                Nutzern ist dafür aus Sicherheitsgründen eine erneute
+                Passwort-Eingabe erforderlich. Alternativ kannst du die
+                Löschung auch formlos per E-Mail an den Verantwortlichen
+                beantragen.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                6. Rechte der betroffenen Personen
               </h2>
               <p className="mt-2">
                 Du hast jederzeit das Recht auf Auskunft, Berichtigung,
@@ -117,7 +168,7 @@ export default function PrivacyPolicy() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                6. Änderungen
+                7. Änderungen
               </h2>
               <p className="mt-2">
                 Diese Datenschutzerklärung kann angepasst werden, wenn sich
